@@ -1,0 +1,14 @@
+slot=2
+delay=3
+
+fn content {
+	bstate=`{awk -F': *' '/charging state/ {print $2}' /proc/acpi/battery/BAT1/state}
+	if(~ $bstate discharging) {
+		p=`{acpi | grep -oE '[0-9]+%' | grep -oE '[0-9]+'}
+		if(expr $p '<' 25 > /dev/null) {
+			notify-send -t 2000 -u critical 'Battery level reached '$p'%'
+		}
+		bstate=$p'%'
+	}
+	echo 'BAT:' $bstate
+}

@@ -1,0 +1,16 @@
+slot=3
+delay=2
+
+interface=wlan0
+
+fn content {
+	essid=`{iwgetid -r}
+	if(~ $#essid 0) {
+		n=`{iwlist $interface scan | grep -c dBm}
+		echo 'WLAN:' $n'ap'
+	}
+	if not {
+		x=`{awk '/'$interface'/ {print $4}' /proc/net/wireless}
+		echo 'WLAN:' $essid $x'dBm'
+	}
+}

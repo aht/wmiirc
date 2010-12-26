@@ -1,0 +1,6 @@
+slot=5
+delay=1
+
+fn content {
+	/bin/date '+%a %d/%-m %T'
+}

@@ -1,0 +1,8 @@
+slot=4
+delay=30m
+
+fn content {
+	weatherget -ms VMXX0007 \
+	| awk -F': ' 'BEGIN{ORS=""} NR==4 || NR==5 {print $2}' \
+	| sed 's/ C/*C /'
+}
