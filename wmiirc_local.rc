@@ -2,16 +2,13 @@
 MODKEY=Mod4
 
 # Theme
-wmiinormcol=('#000000' '#f8f8f4' '#f8f8f4')
-wmiifocuscol=('#000000' '#bbc5ff' '#000000') 
-wmiibackground='#ddeedd' 
-wmiifloatbackground='#222222'
-fn setbackground {
-    xloadimage -onroot -border black -center /home/aht/lib/graphics/wallpaper/421559main_hs-2010-07-a-print-full.jpg
-}
+wmiifocuscol=('#EEEEEE' '#005577' '#006699')
+wmiinormcol=('#BBBBBB' '#222222' '#000000')
+wmiibackground='#111111'
+fn setbackground { feh --bg-max /home/aht/lib/graphics/wallpaper/421559main_hs-2010-07-a-print-full.jpg }
 
 # Programs
-WMII_TERM=(xterm -fa Monaco -fs 8)
+WMII_TERM=(xterm -geometry 100x40 -fa Monaco -fs 8)
 
 # Column Rules
 wmiir write /colrules <<!
@@ -21,28 +18,24 @@ wmiir write /colrules <<!
 
 # Tagging Rules
 wmiir write /tagrules <<!
-/acme.*/ -> 2
-/Clementine.*/ -> 2
-/aqualung.*/ -> ~
-/opera.*/ -> 3
-/surf.*/ -> 3
-/Google-chrome.*/ ->3
-/Navigator.*/ -> 3
-/xchat.*/ -> 4
-/Pidgin.*/ -> 4
-/page.*/ -> 3
-/epdfview.*/ -> 3
-/Djview.*/ -> 3
-/gv:.*/ -> 3
-/inkscape.*/ -> ~
-/inkscape.*/ -> 3
-/[Pp]d.*/ -> ~
-/qjackctl.*/ -> ~
-/.*bristol.*/ -> ~
-/qsynth.*/ -> ~
-/MPlayer.*/ -> ~
-/vlc.*/ -> ~
-/mirage.*/ -> ~
+/xterm/ -> ~
+/thunar/ -> ~
+/acme/ -> 2
+/opera/ -> 3
+/surf/ -> 3
+/Google-chrome/ -> 3
+/Navigator/ -> 3
+/xchat/ -> 4
+/Pidgin/ -> 4
+/aqualung/ -> ~
+/[Pp]d/ -> ~
+/qjackctl/ -> ~
+/qsynth/ -> ~
+/bristol/ -> ~
+/MPlayer/ -> ~
+/vlc/ -> ~
+/inkscape/ -> ~
+/mirage/ -> ~
 /.*/ -> !
 /.*/ -> 1
 !
@@ -50,39 +43,19 @@ wmiir write /tagrules <<!
 fn status
 fn Action-status {
 	for(bar in $home/.wmii/*.bar) {
-		$home/.wmii/statusbar $bar &}}
+		$home/.wmii/bin/statusbar $bar &}}
 
-# Move a client to its own column if it is the second client in a view
-fn Event-CreateClient {
-  clients=`{wmiir read /tag/sel/index |sed '/^#/d' |wc -l}
-  test $clients -eq 2 && wmiir xwrite /tag/sel/ctl send $1 right }
+fn Key-$MODKEY-e { wi_runcmd thunar & }
 
-fn title {
-    echo -n `{wmiir read /client/$1/label} }
-
-fn focusclient {
-    tag=`{wmiir read /client/$1/tags | cut -d+ -f1}
-    wmiir xwrite /tag/$tag/ctl select client $1
-    wmiir xwrite /ctl view $tag }
-
-fn Action-overridekeys {
-    fn Key-$MODKEY-e { wi_runcmd thunar & }
-    
-    fn Key-$MODKEY-r {
+fn Key-$MODKEY-p
+fn Key-$MODKEY-r {
 	ifs=() { cmd = `{wimenu -h $hist.prog -n $histlen <$progs_file} }
 	wi_runcmd $cmd & }
-    
-    fn Key-Print { scrot & }
-    
-    fn Key-$MODKEY-u {
-        ifs=$wi_nl {
-            clients=`{wmiir ls /client | head -n -1 | sed 's/\/$//'}
-            sel=`{{for(c in $clients) echo `{title $c}} | sort | uniq -u | wimenu -i}
-            if(test $sel) {
-                for(c in $clients) {
-                    if(~ $sel `{title $c})
-                        match=$c
-                }
-                if(test $match)
-                    focusclient $match}}}
-}
+
+# tagging for F1-F4
+fn Key-$MODKEY-F^`{seq 1 4} { wmiir xwrite /ctl view `{echo $1 | sed 's/.*-//'} }
+fn Key-Shift-$MODKEY-F^`{seq 1 4} { wmiir xwrite /client/sel/tags `{echo $1 | sed 's/.*-//'} }
+
+fn Key-Print { scrot & }
+
+fn Key-$MODKEY-s { /home/aht/.wmii/bin/search & }
