@@ -1,0 +1,19 @@
+#!/usr/bin/env python2
+
+import pc, re, sys
+
+client_ids = pc.cmd('wmiir ls /client').split('\n')[:-1]
+client_ids = [re.sub('/$', '', c) for c in client_ids]
+
+def props(x):
+	return pc.cmd('wmiir read /client/' + x +'/props')
+
+client = dict((props(x), x) for x in client_ids)
+
+sel = pc.cmd('dmenu -l 20 -b -i', {0: pc.here('\n'.join(sorted(client.keys())))})
+
+if sel:
+	match = client[sel]
+	tag = pc.cmd('wmiir read /client/' + match +'/tags').split('+')
+	pc.run('wmiir xwrite /tag/' + tag[0] + '/ctl select client ' + match)
+	pc.run('wmiir xwrite /ctl view ' + tag[0])
