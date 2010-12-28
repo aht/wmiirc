@@ -29,7 +29,7 @@ fn exit sigint sigterm {
 	builtin exit
 }
 
-echo $WMII_NORMCOLORS | wmiir create /rbar/$slot
+echo $wmiinormcol | wmiir create /rbar/$slot
 
 while() {
 	content | wmiir write /rbar/$slot
