@@ -1,5 +1,5 @@
 slot=4
-delay=30m
+delay=1800
 
 fn content {
 	weatherget -ms VMXX0007 \
