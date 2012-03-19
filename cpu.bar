@@ -19,10 +19,12 @@ fn content {
 
 	p=`{math 'int(100*('$diff_total'-'$diff_idle')/'$diff_total')'}
 
-	t=`{/bin/grep -Eo '[0-9]+' /proc/acpi/thermal_zone/TZ00/temperature}
-	if(expr $t '>' 95 > /dev/null) {
-		notify-send -t 1995 -u critical 'CPU temperature reached '$t'*C'
-	}
+	# t=`{/bin/grep -Eo '[0-9]+' /proc/acpi/thermal_zone/TZ00/temperature}
+	# if(expr $t '>' 95 > /dev/null) {
+	#	notify-send -t 1995 -u critical 'CPU temperature reached '$t'*C'
+	# }
 
-	echo 'CPU:' $p'%' $t'*C' | 9 sed 's!: ([0-9])%!: 0\1%!'
+	# echo 'CPU:' $p'%' $t'*C' | 9 sed 's!: ([0-9])%!: 0\1%!'
+
+	echo 'CPU:' $p'%' | 9 sed 's!: ([0-9])%!: 0\1%!'
 }
