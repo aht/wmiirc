@@ -1,0 +1,9 @@
+These are my wmii configurations. Nothing ground-breaking,
+however, two things noteworthy:
+
+1. A generic "framework" for status bars, with
+one process for each /rbar/* and separate sleep delay.
+This much easier to debug than a do-everything 'status' function.
+
+2. Search-by-name+goto-window functionality, which requires dmenu(1),
+Python and https://github.com/aht/extproc).
