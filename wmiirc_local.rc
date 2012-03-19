@@ -1,41 +1,51 @@
 # Keys
 MODKEY=Mod4
+UP=Up
+DOWN=Down
+LEFT=Left
+RIGHT=Right
 
 # Theme
 wmiifocuscol=('#EEEEEE' '#005577' '#006699')
 wmiinormcol=('#BBBBBB' '#222222' '#000000')
 wmiibackground='#111111'
-fn setbackground { feh --bg-max /home/aht/lib/graphics/wallpaper/421559main_hs-2010-07-a-print-full.jpg }
+fn setbackground {
+	feh --bg-max /home/aht/lib/graphics/wallpaper/h06_00000007.jpg }
 
 # Programs
-WMII_TERM=(xterm -geometry 100x40 -fa Monaco -fs 8)
+WMII_TERM=(xterm -fa Monaco -fs 8)
 
 # Column Rules
 wmiir write /colrules <<!
 /gimp/ -> 17+83+41
-/.*/ -> 62+38
+/.*/ -> 64+36
 !
 
 # Tagging Rules
 wmiir write /tagrules <<!
-/xterm/ -> ~
 /thunar/ -> ~
 /acme/ -> 2
+/sam/ -> 2
 /opera/ -> 3
 /surf/ -> 3
-/Google-chrome/ -> 3
+/chromium/ -> 3
 /Navigator/ -> 3
-/xchat/ -> 4
-/Pidgin/ -> 4
 /aqualung/ -> ~
 /[Pp]d/ -> ~
-/qjackctl/ -> ~
 /qsynth/ -> ~
 /bristol/ -> ~
+/timemachine/ -> ~
 /MPlayer/ -> ~
 /vlc/ -> ~
 /inkscape/ -> ~
 /mirage/ -> ~
+/jkmeter/ -> F1
+/baudline/ -> F1
+/qjackctl/ -> F2
+/ladi/ -> F2
+/skype/ -> F2
+/xchat/ -> F2
+/Pidgin/ -> F2
 /.*/ -> !
 /.*/ -> 1
 !
@@ -43,19 +53,28 @@ wmiir write /tagrules <<!
 fn status
 fn Action-status {
 	for(bar in $home/.wmii/*.bar) {
-		$home/.wmii/bin/statusbar $bar &}}
+		wi_runcmd $home/.wmii/bin/statusbar $bar &}}
 
-fn Key-$MODKEY-e { wi_runcmd thunar & }
+# copy primary selection to clipboard
+fn Key-$MODKEY-c {
+	xsel -p | xsel -b -i &}
 
-fn Key-$MODKEY-p
-fn Key-$MODKEY-r {
-	ifs=() { cmd = `{wimenu -h $hist.prog -n $histlen <$progs_file} }
-	wi_runcmd $cmd & }
+# copy clipboard to primary selection
+fn Key-$MODKEY-x {
+	xsel -b | xsel -p -i &}
 
-# tagging for F1-F4
+# tag with Mod-t
+fn Key-$MODKEY-t {
+	sel=`{wi_selclient} {
+	tag=`{wi_tags | wimenu -h $hist.tag -n 50} && wmiir xwrite /client/$sel/tags $tag } & }
+
+# F1-F4 workspace
 fn Key-$MODKEY-F^`{seq 1 4} { wmiir xwrite /ctl view `{echo $1 | sed 's/.*-//'} }
 fn Key-Shift-$MODKEY-F^`{seq 1 4} { wmiir xwrite /client/sel/tags `{echo $1 | sed 's/.*-//'} }
 
-fn Key-Print { scrot & }
+fn Key-$MODKEY-Tab { /home/aht/.wmii/bin/search & }
+fn Key-$MODKEY-q { wmiir xwrite /client/sel/ctl kill & }
+fn Key-$MODKEY-e { wi_runcmd thunar & }
+fn Key-$MODKEY-l { wi_runcmd slock }
 
-fn Key-$MODKEY-s { /home/aht/.wmii/bin/search & }
+fn Key-Print { scrot & }
